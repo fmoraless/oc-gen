@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Zone;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateZoneRequest;
+use App\Http\Requests\StoreZoneRequest;
 
 class ZoneController extends Controller
 {
@@ -36,18 +38,18 @@ class ZoneController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreZoneRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreZoneRequest $request)
     {
         //dd($request->all());
-        $zona = new Zone();
-        $zona->name = $request->input('name');
-        $zona->description = $request->input('description');
-        $zona->save();
+        $zone = new Zone;
+        $zone->fill($request->validated());
+        $zone->save();
 
-        return redirect('zones');
+        $notification = 'Zona registrada correctamente.';
+        return redirect('zones')->with(compact('notification'));
     }
 
     /**
@@ -69,19 +71,23 @@ class ZoneController extends Controller
      */
     public function edit(Zone $zone)
     {
-        //
+        return view('zones.edit', compact('zone'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  UpdateZoneRequest  $request
      * @param  \App\Models\Zone  $zone
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Zone $zone)
+    public function update(UpdateZoneRequest $request, Zone $zone)
     {
-        //
+        $zone->fill($request->validated());
+        $zone->save();
+
+        $notification = 'Zona editada correctamente.';
+        return redirect('zones')->with(compact('notification'));
     }
 
     /**
@@ -92,6 +98,9 @@ class ZoneController extends Controller
      */
     public function destroy(Zone $zone)
     {
-        //
+        $deletedName = $zone->name;
+        $zone->delete();
+        $notification = 'Zona '. $deletedName . ' ha sido eliminada correctamente.';
+        return redirect('zones')->with(compact('notification'));
     }
 }

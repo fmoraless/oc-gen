@@ -5,7 +5,7 @@
         <div class="card-header border-0">
             <div class="row align-items-center">
                 <div class="col">
-                    <h3 class="mb-0">Nueva Zona</h3>
+                    <h3 class="mb-0">Editar Zona</h3>
                 </div>
                 <div class="col text-right">
                     <a href="{{route('zones.index')}}" class="btn btn-sm btn-default">
@@ -26,15 +26,16 @@
                     @endforeach
                 </ul>
             @endif
-            <form action="{{ route('zones.store') }}" method="POST">
+            <form action="{{ route('zones.update', $zone->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="form-group">
                     <label for="name">Nombre Zona</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                    <input type="text" name="name" class="form-control" value="{{ old('name', $zone->name) }}" required>
                 </div>
                 <div class="form-group">
                     <label for="name">Descripción</label>
-                    <input type="text" name="description" class="form-control" value="{{ old('description') }}">
+                    <input type="text" name="description" class="form-control" value="{{ old('description', $zone->description) }}">
                 </div>
                 <button type="submit" class="btn btn-primary">
                     Guardar
